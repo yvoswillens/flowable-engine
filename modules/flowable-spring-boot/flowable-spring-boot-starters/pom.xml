@@ -14,7 +14,7 @@
 
     <packaging>pom</packaging>
     <properties>
-        <spring-integration-java-dsl.version>1.0.0.RELEASE</spring-integration-java-dsl.version>
+        <spring-integration-java-dsl.version>1.2.1.RELEASE</spring-integration-java-dsl.version>
     </properties>
     <modules>
         <module>flowable-spring-boot-starter-basic</module>
