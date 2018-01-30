@@ -32,7 +32,8 @@ var flowableModeler = angular.module('flowableModeler', [
   'angularSpectrumColorpicker',
   'duScroll',
   'dndLists',
-  'ngHandsontable'
+  'ngHandsontable',
+  'angular-jwt'
 ]);
 
 var flowableModule = flowableModeler;
@@ -40,7 +41,8 @@ var flowableApp = flowableModeler;
 
 flowableModeler
   // Initialize routes
-  .config(['$provide', '$routeProvider', '$selectProvider', '$translateProvider', function ($provide, $routeProvider, $selectProvider, $translateProvider) {
+  .config(['$provide', '$routeProvider', '$selectProvider', '$translateProvider', 'jwtInterceptorProvider', '$httpProvider',
+      function ($provide, $routeProvider, $selectProvider, $translateProvider, jwtInterceptorProvider, $httpProvider) {
 
     var appResourceRoot = FLOWABLE.CONFIG.webContextRoot + (FLOWABLE.CONFIG.webContextRoot ? '/' : '');
     $provide.value('appResourceRoot', appResourceRoot);
@@ -156,6 +158,11 @@ flowableModeler
         .uniformLanguageTag('bcp47')
         .determinePreferredLanguage();
 
+        jwtInterceptorProvider.tokenGetter = function(store) {
+              return store.get('jwt');
+        }
+
+        $httpProvider.interceptors.push('jwtInterceptor');
   }])
   .run(['$rootScope', '$timeout', '$modal', '$translate', '$location', '$http', '$window', 'appResourceRoot',
         function($rootScope, $timeout, $modal, $translate, $location, $http, $window, appResourceRoot) {

@@ -19,6 +19,9 @@ import org.flowable.app.security.AjaxLogoutSuccessHandler;
 import org.flowable.app.security.ClearFlowableCookieLogoutHandler;
 import org.flowable.app.security.DefaultPrivileges;
 import org.flowable.app.security.RemoteIdmAuthenticationProvider;
+import org.flowable.app.security.jwt.JWTConfigurer;
+import org.flowable.app.security.jwt.JWTFilter;
+import org.flowable.app.security.jwt.TokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +53,25 @@ public class SecurityConfiguration {
     @Autowired
     protected RemoteIdmAuthenticationProvider authenticationProvider;
 
+    @Autowired
+    protected TokenProvider tokenProvider;
+
     @Bean
     public FlowableCookieFilter flowableCookieFilter() {
         FlowableCookieFilter filter = new FlowableCookieFilter();
         filter.setRequiredPrivileges(Collections.singletonList(DefaultPrivileges.ACCESS_MODELER));
         return filter;
+    }
+
+    @Bean
+    public JWTFilter flowableJwtFilter() {
+        JWTFilter filter = new JWTFilter(tokenProvider);
+        return filter;
+    }
+
+    @Bean
+    public JWTConfigurer securityConfigurerAdapter() {
+        return new JWTConfigurer(tokenProvider);
     }
     
     @Autowired
@@ -78,13 +95,16 @@ public class SecurityConfiguration {
         @Autowired
         protected AjaxLogoutSuccessHandler ajaxLogoutSuccessHandler;
 
+        @Autowired
+        protected JWTFilter flowableJwtFilter;
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .addFilterBefore(flowableCookieFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(flowableJwtFilter, UsernamePasswordAuthenticationFilter.class)
                     .logout()
                         .logoutUrl("/app/logout")
                         .logoutSuccessHandler(ajaxLogoutSuccessHandler)
