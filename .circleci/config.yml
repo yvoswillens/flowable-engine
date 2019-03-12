@@ -71,7 +71,6 @@ jobs:
 
       - image: mysql:5.7
         environment:
-          - MYSQL_ROOT_HOST=127.0.0.1
           - MYSQL_ROOT_PASSWORD=flowable
           - MYSQL_DATABASE=flowable
           - MYSQL_USER=flowable
@@ -94,7 +93,7 @@ jobs:
             mkdir -p ~/.flowable/jdbc
             echo "jdbc.url=jdbc:mysql://localhost:3306/flowable?characterEncoding=UTF-8" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
             echo "jdbc.driver=com.mysql.jdbc.Driver" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
-            echo "jdbc.username=flowable" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+            echo "jdbc.username=root" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
             echo "jdbc.password=flowable" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
 
       - run: 
