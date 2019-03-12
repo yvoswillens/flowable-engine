@@ -1,34 +1,57 @@
-version: 2 # use CircleCI 2.0
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
-    
-    working_directory: ~/flowable-ci # directory where steps will run
+version: 2.1
 
+executors:
+  java8:
     docker:
       - image: circleci/openjdk:8u171-jdk
+    working_directory: ~/flowable-master
 
-      - image: circleci/postgres:9.6.2-alpine
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle-test_test
+jobs:
+  build:
+    executor: java8
+
+      # - image: circleci/postgres:9.6.2-alpine
+      #   environment:
+      #     POSTGRES_USER: root
+      #     POSTGRES_DB: circle-test_test
 
     steps:
-
       - checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-master-{{ checksum "pom.xml" }}
 
-      - run: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
+      - run: 
+          name: Setup MAVEN_OPTS
+          command: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
       
-      - run: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
+      - run: 
+          name: Caching dependencies
+          command: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-master-{{ checksum "pom.xml" }}
       
-      - run: mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+      - run: 
+          name: Compile code
+          command: mvn -s .circleci/settings.xml clean install -Pcheck,skipTests -Dmaven.repo.local=~/.m2/repository
       
+  qa-test:
+    executor: java8
+
+    steps:
+      - run:
+          name: Run tests
+          command: mvn -s .circleci/settings.xml surefire:test -Pcheck -Dmaven.repo.local=~/.m2/repository
+
       - store_test_results:
           path: target/surefire-reports
+
+workflows:
+  version: 2.1
+  build_and_test:
+    jobs:
+      - build
+      - qa-test
