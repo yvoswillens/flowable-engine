@@ -5,7 +5,7 @@ jobs: # a collection of steps
     working_directory: ~/flowable-ci # directory where steps will run
 
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:11
 
     steps:
 
