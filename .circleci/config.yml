@@ -1,17 +1,17 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/flowable
+    # working_directory: ~/flowable
 
     docker:
       - image: circleci/openjdk:8u171-jdk
 
     steps:
-      - checkout:
-          path: checkout
+      - checkout
+          # path: checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "~/flowable/checkout/pom.xml" }}
+          key: flowable-ci-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -19,21 +19,21 @@ jobs:
       
       - run: 
           name: Caching dependencies
-          command: cd ~/flowable/checkout && mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-ci-{{ checksum "~/flowable/checkout/pom.xml" }}
+          key: flowable-ci-{{ checksum "pom.xml" }}
       
       - run: 
           name: Compile code
-          command: cd ~/flowable/checkout && mvn -s .circleci/settings.xml clean install -Pcheck,errorLogging -DskipTests -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml clean install -Pcheck,errorLogging -DskipTests -Dmaven.repo.local=~/.m2/repository
 
-      - persist_to_workspace:
-          root: ~/flowable
-          paths:
-            - checkout
+      # - persist_to_workspace:
+      #     root: ~/flowable
+      #     paths:
+      #       - checkout
 
   qa_postgres:
     working_directory: ~/flowable
@@ -47,11 +47,12 @@ jobs:
           POSTGRES_DB: flowable
 
     steps:
-      - attach_workspace:
-          at: ~/flowable
+      # - attach_workspace:
+      #     at: ~/flowable
+      - checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "~/flowable/checkout/pom.xml" }}
+          key: flowable-ci-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -68,7 +69,7 @@ jobs:
 
       - run: 
           name: Run Postgres QA test
-          command: cd ~/flowable/checkout && mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
 
 workflows:
   version: 2.1
