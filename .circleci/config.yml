@@ -71,6 +71,7 @@ jobs:
 
       - image: mysql:5.7
         environment:
+          - MYSQL_ROOT_HOST=%
           - MYSQL_ROOT_PASSWORD=flowable
           - MYSQL_DATABASE=flowable
           - MYSQL_USER=flowable
