@@ -284,7 +284,6 @@
                         <exclude>${exclude.tests}</exclude>
                         <exclude>${exclude.tests2}</exclude>
                     </excludes>
-                    <argLine>${argLine} -Xmx3g</argLine>
                 </configuration>
             </plugin>
             <plugin>

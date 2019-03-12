@@ -190,7 +190,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>${argLine} -Xmx3g</argLine>
+                    <!-- <argLine>${argLine} -Xmx3g</argLine> -->
                 </configuration>
             </plugin>
             <plugin>
