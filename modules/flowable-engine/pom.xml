@@ -285,7 +285,9 @@
                         <exclude>${exclude.tests2}</exclude>
                         <exclude>**/HistoricProcessInstanceQueryEscapeClauseTest.java</exclude>
                     </excludes>
-                    <argLine>${argLine} -Xmx1g</argLine>
+                    <argLine>-Xmx2g</argLine>
+                     <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
             <plugin>
