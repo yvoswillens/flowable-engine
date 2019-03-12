@@ -36,7 +36,7 @@ jobs:
       
       - run: 
           name: Compile code
-          command: mvn -s .circleci/settings.xml clean install -Pcheck,skipTests -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml clean install -Pcheck -DskipTests -Dmaven.repo.local=~/.m2/repository
       
   qa-test:
     executor: java8
