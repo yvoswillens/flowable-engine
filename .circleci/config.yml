@@ -19,7 +19,7 @@ jobs:
       
       - run: 
           name: Caching dependencies
-          command: d ~/flowable-qa/checkout && mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
+          command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
@@ -28,7 +28,7 @@ jobs:
       
       - run: 
           name: Compile code
-          command: d ~/flowable-qa/checkout && mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+          command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
 
       - persist_to_workspace:
           root: ~/flowable-qa
