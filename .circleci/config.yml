@@ -61,12 +61,12 @@ jobs:
           name: Run Postgres QA test
           command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml surefire:test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
 
-  workflows:
-    version: 2.1
+workflows:
+  version: 2.1
 
-    flowable_qa:
-      jobs:
-        - build
-        - qa_postgres:
-            requires:
-              - build
+  flowable_qa:
+    jobs:
+      - build
+      - qa_postgres:
+          requires:
+            - build
