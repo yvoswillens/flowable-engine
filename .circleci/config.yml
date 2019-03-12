@@ -11,7 +11,7 @@ jobs:
           path: checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-ci-{{ checksum "~/flowable-qa/checkout/pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-ci-{{ checksum "~/flowable-qa/checkout/pom.xml" }}
       
       - run: 
           name: Compile code
@@ -51,7 +51,7 @@ jobs:
           at: ~/flowable-qa/checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-ci-{{ checksum "~/flowable-qa/checkout/pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
