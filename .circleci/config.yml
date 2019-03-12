@@ -69,11 +69,9 @@ jobs:
     docker:
       - image: circleci/openjdk:8u171-jdk
 
-      - image: circleci/mysql:5.6
+      - image: mysql:5.7
         environment:
-          - MYSQL_HOST= 127.0.0.1
-          - MYSQL_ROOT_HOST=%
-          - MYSQL_ALLOW_EMPTY_PASSWORD=true
+          - MYSQL_ROOT_PASSWORD=flowable
           - MYSQL_DATABASE=flowable
           - MYSQL_USER=flowable
 
