@@ -14,7 +14,7 @@ jobs: # a collection of steps
       - restore_cache:
           key: flowable-ci-{{ checksum "pom.xml" }}
       
-      - run: de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Dmaven.repo.local=.m2/repository
+      - run: mvn de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
