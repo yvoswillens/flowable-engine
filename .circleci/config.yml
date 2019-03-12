@@ -11,7 +11,7 @@ jobs:
           # path: checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -24,12 +24,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-ci-{{ checksum "pom.xml" }}
-
-      # - persist_to_workspace:
-      #     root: ~/flowable
-      #     paths:
-      #       - checkout
+          key: flowable-qa-{{ checksum "pom.xml" }}
 
   qa_postgres:
     working_directory: ~/flowable
@@ -48,7 +43,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -73,7 +68,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8u171-jdk
 
-      - image: circleci/circleci/mysql:5.6
+      - image: circleci/mysql:5.6
         environment:
           - MYSQL_HOST= 127.0.0.1
           - MYSQL_ROOT_HOST=%
@@ -87,7 +82,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: flowable-ci-{{ checksum "pom.xml" }}
+          key: flowable-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
