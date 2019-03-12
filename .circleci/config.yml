@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-ci-{{ checksum "~/flowable-qa/checkout/pom.xml" }}
+          key: flowable-ci-{{ checksum "~/flowable/checkout/pom.xml" }}
       
       - run: 
           name: Compile code
