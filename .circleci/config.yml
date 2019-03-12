@@ -7,6 +7,11 @@ jobs: # a collection of steps
     docker:
       - image: circleci/openjdk:8u171-jdk
 
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle-test_test
+
     steps:
 
       - checkout
@@ -16,14 +21,14 @@ jobs: # a collection of steps
 
       - run: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
       
-      - run: mvn de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Dmaven.repo.local=~/.m2/repository
+      - run: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
             - ~/.m2
           key: flowable-ci-{{ checksum "pom.xml" }}
       
-      - run: mvn clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+      - run: mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
       
       - store_test_results:
           path: target/surefire-reports
