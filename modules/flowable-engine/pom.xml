@@ -283,6 +283,7 @@
                         <exclude>**/RepeatingServiceTaskTest.java</exclude>
                         <exclude>${exclude.tests}</exclude>
                         <exclude>${exclude.tests2}</exclude>
+                        <exclude>**/HistoricProcessInstanceQueryEscapeClauseTest.java</exclude>
                     </excludes>
                     <argLine>${argLine} -Xmx1g</argLine>
                 </configuration>
