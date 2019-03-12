@@ -67,7 +67,7 @@ jobs:
           name: Run Postgres QA test
           command: mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
 
-qa_mysql:
+  qa_mysql:
     working_directory: ~/flowable
 
     docker:
