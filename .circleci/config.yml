@@ -1,25 +1,17 @@
 version: 2.1
-
-executors:
-  java8:
-    docker:
-      - image: circleci/openjdk:8u171-jdk
-    working_directory: ~/flowable-master
-
 jobs:
   build:
-    executor: java8
+    working_directory: ~/flowable-qa
 
-      # - image: circleci/postgres:9.6.2-alpine
-      #   environment:
-      #     POSTGRES_USER: root
-      #     POSTGRES_DB: circle-test_test
+    docker:
+      - image: circleci/openjdk:8u171-jdk
 
     steps:
-      - checkout
+      - checkout:
+          path: checkout
 
       - restore_cache:
-          key: flowable-master-{{ checksum "pom.xml" }}
+          key: flowable-ci-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -27,33 +19,54 @@ jobs:
       
       - run: 
           name: Caching dependencies
-          command: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
+          command: d ~/flowable-qa/checkout && mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
       
       - save_cache:
           paths:
             - ~/.m2
-          key: flowable-master-{{ checksum "pom.xml" }}
+          key: flowable-ci-{{ checksum "pom.xml" }}
       
       - run: 
           name: Compile code
-          command: mvn -s .circleci/settings.xml clean install -Pcheck -DskipTests -Dmaven.repo.local=~/.m2/repository
-      
-  qa-test:
-    executor: java8
+          command: d ~/flowable-qa/checkout && mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+
+      - persist_to_workspace:
+          root: ~/flowable-qa
+          paths:
+            - checkout
+
+  qa_postgres:
+    working_directory: ~/flowable-qa
+
+    docker:
+      - image: circleci/openjdk:8u171-jdk
+
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle-test_test
 
     steps:
-      - run:
-          name: Run tests
-          command: mvn -s .circleci/settings.xml surefire:test -Pcheck -Dmaven.repo.local=~/.m2/repository
+      - attach_workspace:
+          at: ~/flowable-qa/checkout
 
-      - store_test_results:
-          path: target/surefire-reports
+      - restore_cache:
+          key: flowable-ci-{{ checksum "pom.xml" }}
 
-workflows:
-  version: 2.1
-  build_and_test:
-    jobs:
-      - build
-      - qa-test:
-          requires:
-            - build
+      - run: 
+          name: Setup MAVEN_OPTS
+          command: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
+
+      - run: 
+          name: Run Postgres QA test
+          command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml surefire:test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+
+  workflows:
+    version: 2.1
+
+    flowable_qa:
+      jobs:
+        - build
+        - qa_postgres:
+            requires:
+              - build
