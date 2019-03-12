@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: ~/flowable-qa/checkout
+          at: ~/flowable-qa
 
       - restore_cache:
           key: flowable-ci-{{ checksum "~/flowable-qa/checkout/pom.xml" }}
