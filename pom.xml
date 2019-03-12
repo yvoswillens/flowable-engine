@@ -1038,6 +1038,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.1</version>
 				<configuration>
+					<argLine>-Xss256k -Xms1024m -Xmx4008m</argLine>
 					<failIfNoTests>false</failIfNoTests>
 					<trimStackTrace>false</trimStackTrace>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>

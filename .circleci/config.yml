@@ -16,7 +16,7 @@ jobs: # a collection of steps
 
       - run: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
       
-      - run: mvn de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Dmaven.repo.local=~/.m2/repository
+      # - run: mvn de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Dmaven.repo.local=~/.m2/repository
       
       # - save_cache:
       #     paths:
