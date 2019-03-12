@@ -54,4 +54,6 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - qa-test
+      - qa-test:
+          requires:
+            - build
