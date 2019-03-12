@@ -36,6 +36,7 @@ jobs:
         environment:
           POSTGRES_USER: flowable
           POSTGRES_DB: flowable
+          POSTGRES_PASSWORD: flowable
 
     steps:
       # - attach_workspace:
@@ -56,7 +57,7 @@ jobs:
             echo "jdbc.url=jdbc:postgresql://localhost:5432/flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
             echo "jdbc.driver=org.postgresql.Driver" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
             echo "jdbc.username=flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
-            echo "jdbc.password=" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
+            echo "jdbc.password=flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
 
       - run: 
           name: Run Postgres QA test
@@ -95,7 +96,7 @@ jobs:
             echo "jdbc.url=jdbc:mysql://localhost:3306/flowable?characterEncoding=UTF-8" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
             echo "jdbc.driver=com.mysql.jdbc.Driver" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
             echo "jdbc.username=flowable" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
-            echo "jdbc.password=" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+            echo "jdbc.password=flowable" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
 
       - run: 
           name: Run MySQL QA test
