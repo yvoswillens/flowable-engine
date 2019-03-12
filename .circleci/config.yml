@@ -43,8 +43,8 @@ jobs:
 
       - image: circleci/postgres:9.6.2-alpine
         environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle-test_test
+          POSTGRES_USER: flowable
+          POSTGRES_DB: flowable
 
     steps:
       - attach_workspace:
@@ -64,7 +64,7 @@ jobs:
             echo "jdbc.url=jdbc:postgresql://localhost:5432/flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
             echo "jdbc.driver=org.postgresql.Driver" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
             echo "jdbc.username=flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
-            echo "jdbc.password=flowable" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
+            echo "jdbc.password=" >> ~/.flowable/jdbc/build.flowable6.postgres.properties
 
       - run: 
           name: Run Postgres QA test
