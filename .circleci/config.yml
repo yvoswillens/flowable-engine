@@ -28,7 +28,7 @@ jobs:
       
       - run: 
           name: Compile code
-          command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml clean test -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+          command: cd ~/flowable-qa/checkout && mvn -s .circleci/settings.xml clean install -Pcheck,errorLogging -DskipTests -Dmaven.repo.local=~/.m2/repository
 
       - persist_to_workspace:
           root: ~/flowable-qa
