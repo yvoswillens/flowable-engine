@@ -25,10 +25,6 @@ jobs:
           paths:
             - ~/.m2
           key: flowable-ci-{{ checksum "pom.xml" }}
-      
-      - run: 
-          name: Compile code
-          command: mvn -s .circleci/settings.xml clean install -Pcheck,errorLogging -DskipTests -Dmaven.repo.local=~/.m2/repository
 
       # - persist_to_workspace:
       #     root: ~/flowable
@@ -71,6 +67,45 @@ jobs:
           name: Run Postgres QA test
           command: mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
 
+qa_mysql:
+    working_directory: ~/flowable
+
+    docker:
+      - image: circleci/openjdk:8u171-jdk
+
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_HOST: %
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_DATABASE: flowable
+          MYSQL_USER: flowable
+
+    steps:
+      # - attach_workspace:
+      #     at: ~/flowable
+      - checkout
+
+      - restore_cache:
+          key: flowable-ci-{{ checksum "pom.xml" }}
+
+      - run: 
+          name: Setup MAVEN_OPTS
+          command: export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true"
+
+      - run:
+          name: Create db properties
+          command: |
+            mkdir -p ~/.flowable/jdbc
+            echo "jdbc.url=jdbc:mysql://localhost:3306/flowable?characterEncoding=UTF-8" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+            echo "jdbc.driver=com.mysql.jdbc.Driver" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+            echo "jdbc.username=flowable" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+            echo "jdbc.password=" >> ~/.flowable/jdbc/build.flowable6.mysql.properties
+
+      - run: 
+          name: Run MySQL QA test
+          command: mvn -s .circleci/settings.xml clean install -Ddatabase=mysql -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+
 workflows:
   version: 2.1
 
@@ -78,5 +113,8 @@ workflows:
     jobs:
       - build
       - qa_postgres:
+          requires:
+            - build
+      - qa_mysql:
           requires:
             - build
