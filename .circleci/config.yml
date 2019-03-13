@@ -11,7 +11,7 @@ jobs:
           # path: checkout
 
       - restore_cache:
-          key: flowable-qa-{{ checksum "pom.xml" }}
+          key: flowable-db-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -19,11 +19,11 @@ jobs:
       
       - run: 
           name: Caching dependencies
-          command: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml de.qaware.maven:go-offline-maven-plugin:1.1.0:resolve-dependencies -Pcheck -Dmaven.repo.local=/home/circleci/.m2/repository
       
       - save_cache:
           paths:
-            - ~/.m2
+            - /home/circleci/.m2/repository
           key: flowable-qa-{{ checksum "pom.xml" }}
 
   qa_postgres:
@@ -44,7 +44,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: flowable-qa-{{ checksum "pom.xml" }}
+          key: flowable-db-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -61,7 +61,7 @@ jobs:
 
       - run: 
           name: Run Postgres QA test
-          command: mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml clean install -Ddatabase=postgres -Pcheck,errorLogging -Dmaven.repo.local=/home/circleci/.m2/repository
 
       - run:
           name: Save test results
@@ -94,7 +94,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: flowable-qa-{{ checksum "pom.xml" }}
+          key: flowable-db-qa-{{ checksum "pom.xml" }}
 
       - run: 
           name: Setup MAVEN_OPTS
@@ -111,7 +111,7 @@ jobs:
 
       - run: 
           name: Run MySQL QA test
-          command: mvn -s .circleci/settings.xml clean install -Ddatabase=mysql -Pcheck,errorLogging -Dmaven.repo.local=~/.m2/repository
+          command: mvn -s .circleci/settings.xml clean install -Ddatabase=mysql -Pcheck,errorLogging -Dmaven.repo.local=/home/circleci/.m2/repository
 
       - run:
           name: Save test results
